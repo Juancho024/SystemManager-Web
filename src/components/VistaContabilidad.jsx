@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
+import { generarPDF } from '../utils/GeneradorPDF'
 
 function VistaContabilidad({ owners }) {
   const [searchMonth, setSearchMonth] = useState('')
@@ -525,11 +526,11 @@ function VistaContabilidad({ owners }) {
             <div style={{ marginTop: '20px', textAlign: 'right', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
               <button 
                 className="btn btn-success" 
-                onClick={() => window.print()}
+                onClick={() => generarPDF(searchMonth, cuotasDetalle)}
                 style={{ padding: '10px 30px', fontWeight: 'bold' }}
               >
-                <i className="fas fa-print" style={{ marginRight: '5px' }}></i>
-                Imprimir
+                <i className="fas fa-file-pdf" style={{ marginRight: '5px' }}></i>
+                Descargar PDF
               </button>
               <button 
                 className="btn btn-secondary" 
