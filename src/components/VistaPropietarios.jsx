@@ -140,12 +140,6 @@ function VistaPropietarios({ owners, selectedOwner, onSelectOwner }) {
                   value={`DOP$ ${(selectedOwner.balance || 0).toFixed(2)}`}
                   readOnly
                 />
-                <div className="d-flex gap-3 mt-4">
-                  <button 
-                    className="btn btn-success flex-fill" 
-                    style={{ padding: '12px', fontWeight: 'bold' }}
-                  >Modificar Abonado</button>
-                </div>
               </>
             ) : (
               <p style={{ color: '#999' }}>Selecciona un propietario para ver detalles</p>
