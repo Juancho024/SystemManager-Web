@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from 'react'
 function VistaContabilidad({ owners }) {
   const [searchMonth, setSearchMonth] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [showInforme, setShowInforme] = useState(false)
   const [registros, setRegistros] = useState([])
   const [registroActual, setRegistroActual] = useState(null)
   const [cuotasDetalle, setCuotasDetalle] = useState([])
@@ -67,6 +68,14 @@ function VistaContabilidad({ owners }) {
     setShowModal(false)
   }
 
+  const handleOpenInforme = () => {
+    setShowInforme(true)
+  }
+
+  const handleCloseInforme = () => {
+    setShowInforme(false)
+  }
+
   const parseMonth = (mesCuota) => {
     try {
       if (!mesCuota || !mesCuota.includes('-')) return null
@@ -123,8 +132,9 @@ function VistaContabilidad({ owners }) {
             className="btn btn-secondary" 
             style={{ padding: '10px 20px', fontWeight: 'bold' }}
             onClick={handleOpenInforme}
+            disabled={!registroActual}
           >
-            <i className="fas fa-file-pdf" style={{ marginRight: '5px' }}></i>
+            <i className="fas fa-file-alt" style={{ marginRight: '5px' }}></i>
             Informe
           </button>
           <button 
@@ -320,6 +330,199 @@ function VistaContabilidad({ owners }) {
               <button 
                 className="btn btn-secondary" 
                 onClick={handleCloseModal}
+                style={{ padding: '10px 30px', fontWeight: 'bold' }}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Informe */}
+      {showInforme && registroActual && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}
+          onClick={handleCloseInforme}
+        >
+          <div 
+            style={{
+              background: 'white',
+              borderRadius: '15px',
+              padding: '30px',
+              width: '95%',
+              maxWidth: '1400px',
+              maxHeight: '90vh',
+              overflow: 'auto',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header del Informe */}
+            <div style={{ 
+              background: '#364858', 
+              color: 'white', 
+              padding: '20px', 
+              borderRadius: '0px', 
+              marginBottom: '0px',
+              textAlign: 'center'
+            }}>
+              <h2 style={{ margin: 0, fontWeight: 'bold', fontSize: '24px' }}>
+                INFORME FINANCIERO DEL MES DE {searchMonth.split('-')[0].toUpperCase()}-{searchMonth.split('-')[1].toUpperCase()}
+              </h2>
+            </div>
+
+            {/* Resumen Financiero */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(4, 1fr)', 
+              gap: '0px',
+              marginBottom: '0px',
+              borderBottom: '3px solid #364858'
+            }}>
+              <div style={{ 
+                padding: '20px', 
+                background: 'white', 
+                textAlign: 'center',
+                borderRight: '1px solid #ddd'
+              }}>
+                <div style={{ fontSize: '13px', color: '#666', marginBottom: '10px', fontWeight: '600' }}>Total Recibido:</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#28a745' }}>
+                  DOP$ {cuotasDetalle
+                    .filter(d => d.balance >= 0)
+                    .reduce((sum, d) => sum + (d.montoPagar || 0), 0)
+                    .toFixed(2)}
+                </div>
+              </div>
+              <div style={{ 
+                padding: '20px', 
+                background: 'white', 
+                textAlign: 'center',
+                borderRight: '1px solid #ddd'
+              }}>
+                <div style={{ fontSize: '13px', color: '#666', marginBottom: '10px', fontWeight: '600' }}>Monto Cuota Mensual:</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold' }}>DOP$ {registroActual.montoPagar?.toFixed(2) || '0.00'}</div>
+              </div>
+              <div style={{ 
+                padding: '20px', 
+                background: 'white', 
+                textAlign: 'center',
+                borderRight: '1px solid #ddd'
+              }}>
+                <div style={{ fontSize: '13px', color: '#666', marginBottom: '10px', fontWeight: '600' }}>Monto a Pagar Total:</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold' }}>DOP$ {registroActual.montoPagar?.toFixed(2) || '0.00'}</div>
+              </div>
+              <div style={{ 
+                padding: '20px', 
+                background: '#ffebee', 
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '13px', color: '#666', marginBottom: '10px', fontWeight: '600' }}>Balance total Pendiente:</div>
+                <div style={{ 
+                  fontSize: '24px', 
+                  fontWeight: 'bold',
+                  color: '#dc3545'
+                }}>
+                  DOP$ -{cuotasDetalle
+                    .filter(d => d.balance < 0)
+                    .reduce((sum, d) => sum + (d.montoPagar || 0), 0)
+                    .toFixed(2)}
+                </div>
+              </div>
+            </div>
+
+            {/* Tabla de Propietarios */}
+            <div style={{ marginBottom: '0px' }}>
+              <table className="table" style={{ marginBottom: '0px', borderCollapse: 'collapse' }}>
+                <thead style={{ background: '#364858', color: 'white' }}>
+                  <tr>
+                    <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px', fontWeight: 'bold' }}>Apto</th>
+                    <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px', fontWeight: 'bold' }}>Propietario</th>
+                    <th style={{ padding: '12px', textAlign: 'center', fontSize: '13px', fontWeight: 'bold' }}>Estado</th>
+                    <th style={{ padding: '12px', textAlign: 'right', fontSize: '13px', fontWeight: 'bold' }}>Total Recibido a la Fecha</th>
+                    <th style={{ padding: '12px', textAlign: 'right', fontSize: '13px', fontWeight: 'bold' }}>Cuota Mensual</th>
+                    <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px', fontWeight: 'bold' }}>Descripción</th>
+                    <th style={{ padding: '12px', textAlign: 'right', fontSize: '13px', fontWeight: 'bold' }}>Monto a Pagar</th>
+                    <th style={{ padding: '12px', textAlign: 'right', fontSize: '13px', fontWeight: 'bold' }}>Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cuotasDetalle.map((detalle, idx) => (
+                    <tr key={idx} style={{ borderBottom: '1px solid #ddd' }}>
+                      <td style={{ padding: '12px', fontSize: '12px' }}>{detalle.numApto}</td>
+                      <td style={{ padding: '12px', fontSize: '12px' }}>{detalle.nombrePropietario}</td>
+                      <td style={{ padding: '12px', textAlign: 'center' }}>
+                        <span 
+                          style={{
+                            display: 'inline-block',
+                            width: '10px',
+                            height: '10px',
+                            borderRadius: '50%',
+                            backgroundColor: detalle.estado === 'Verde' ? '#28a745' : '#dc3545'
+                          }}
+                        ></span>
+                      </td>
+                      <td style={{ padding: '12px', textAlign: 'right', fontSize: '12px' }}>DOP$ {detalle.totalabonado?.toFixed(2) || '0.00'}</td>
+                      <td style={{ padding: '12px', textAlign: 'right', fontSize: '12px' }}>DOP$ {detalle.montoPagar?.toFixed(2) || '0.00'}</td>
+                      <td style={{ padding: '12px', fontSize: '12px' }}>{detalle.descripcion}</td>
+                      <td style={{ padding: '12px', textAlign: 'right', fontSize: '12px' }}>DOP$ {detalle.montoPagar?.toFixed(2) || '0.00'}</td>
+                      <td 
+                        style={{ 
+                          padding: '12px',
+                          textAlign: 'right',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          color: detalle.balance < 0 ? '#dc3545' : '#28a745'
+                        }}
+                      >
+                        DOP$ {detalle.balance?.toFixed(2) || '0.00'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Sección de recibos */}
+            <div style={{ 
+              background: '#364858',
+              color: 'white',
+              padding: '15px',
+              marginTop: '30px',
+              marginBottom: '20px',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: '16px'
+            }}>
+              RECIBOS DE PAGOS ADJUNTOS
+            </div>
+
+            {/* Footer */}
+            <div style={{ 
+              textAlign: 'center', 
+              fontSize: '12px', 
+              color: '#666',
+              padding: '20px',
+              borderTop: '2px solid #364858'
+            }}>
+              Generado el {new Date().toLocaleDateString('es-DO')} | Residencial Santos I
+            </div>
+
+            <div style={{ marginTop: '20px', textAlign: 'right', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              <button 
+                className="btn btn-secondary" 
+                onClick={handleCloseInforme}
                 style={{ padding: '10px 30px', fontWeight: 'bold' }}
               >
                 Cerrar
