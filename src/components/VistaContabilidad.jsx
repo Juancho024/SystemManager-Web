@@ -469,7 +469,7 @@ function VistaContabilidad({ owners }) {
                             width: '10px',
                             height: '10px',
                             borderRadius: '50%',
-                            backgroundColor: detalle.estado === 'Verde' ? '#28a745' : '#dc3545'
+                            backgroundColor: detalle.balance >= 0 ? '#28a745' : '#dc3545'
                           }}
                         ></span>
                       </td>
