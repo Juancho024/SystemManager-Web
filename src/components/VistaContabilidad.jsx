@@ -34,16 +34,16 @@ function VistaContabilidad({ owners }) {
       return
     }
 
-    const registroEncontrado = registros.find(r => 
+    const registroEncontrado = registros.find(r =>
       r.mesCuota?.toLowerCase() === searchMonth.toLowerCase()
     )
 
     if (registroEncontrado) {
       setRegistroActual(registroEncontrado)
-      
+
       // Calcular balance acumulado hasta ese mes
       const balanceAcumulado = calcularMontoDebidoHastaMes(searchMonth)
-      
+
       // Generar detalle para cada propietario
       const detalles = owners.map(owner => ({
         ...owner,
@@ -52,7 +52,7 @@ function VistaContabilidad({ owners }) {
         montoPagar: registroEncontrado.montoPagar,
         balance: (owner.totalabonado || 0) - balanceAcumulado
       }))
-      
+
       setCuotasDetalle(detalles)
     } else {
       setRegistroActual(null)
@@ -104,8 +104,8 @@ function VistaContabilidad({ owners }) {
     }, 0)
   }
 
-  const totalRecibido = useMemo(() => 
-    owners.reduce((sum, o) => sum + (o.totalabonado || 0), 0), 
+  const totalRecibido = useMemo(() =>
+    owners.reduce((sum, o) => sum + (o.totalabonado || 0), 0),
     [owners]
   )
 
@@ -128,8 +128,8 @@ function VistaContabilidad({ owners }) {
           onChange={(e) => setSearchMonth(e.target.value)}
         />
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button 
-            className="btn btn-secondary" 
+          <button
+            className="btn btn-secondary"
             style={{ padding: '10px 20px', fontWeight: 'bold' }}
             onClick={handleOpenInforme}
             disabled={!registroActual}
@@ -137,8 +137,8 @@ function VistaContabilidad({ owners }) {
             <i className="fas fa-file-alt" style={{ marginRight: '5px' }}></i>
             Informe
           </button>
-          <button 
-            className="btn btn-success" 
+          <button
+            className="btn btn-success"
             style={{ padding: '10px 20px', fontWeight: 'bold' }}
             onClick={handleOpenModal}
           >
@@ -189,7 +189,7 @@ function VistaContabilidad({ owners }) {
               </thead>
               <tbody>
                 {owners.map((owner, idx) => (
-                  <tr 
+                  <tr
                     key={owner.idpropietario || idx}
                     style={{ cursor: 'pointer' }}
                   >
@@ -231,9 +231,9 @@ function VistaContabilidad({ owners }) {
                       <td>{detalle.cuotaMensual}</td>
                       <td>{detalle.descripcion}</td>
                       <td>DOP$ {detalle.montoPagar?.toFixed(2) || '0.00'}</td>
-                      <td 
-                        className="text-end" 
-                        style={{ 
+                      <td
+                        className="text-end"
+                        style={{
                           fontWeight: 'bold',
                           color: detalle.balance < 0 ? '#dc3545' : '#28a745'
                         }}
@@ -257,7 +257,7 @@ function VistaContabilidad({ owners }) {
 
       {/* Modal Registros Financieros */}
       {showModal && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             top: 0,
@@ -272,7 +272,7 @@ function VistaContabilidad({ owners }) {
           }}
           onClick={handleCloseModal}
         >
-          <div 
+          <div
             style={{
               background: 'white',
               borderRadius: '15px',
@@ -286,7 +286,7 @@ function VistaContabilidad({ owners }) {
             onClick={(e) => e.stopPropagation()}
           >
             <h3 style={{ marginBottom: '25px', fontWeight: 'bold' }}>Registros Financieros</h3>
-            
+
             <h5 style={{ marginBottom: '15px' }}>Todos los Registros</h5>
             <div style={{ maxHeight: '400px', overflow: 'auto' }}>
               <table className="table table-hover">
@@ -301,7 +301,7 @@ function VistaContabilidad({ owners }) {
                 <tbody>
                   {registros.length > 0 ? (
                     registros.map((registro, idx) => (
-                      <tr 
+                      <tr
                         key={idx}
                         onClick={() => {
                           setSearchMonth(registro.mesCuota)
@@ -327,8 +327,8 @@ function VistaContabilidad({ owners }) {
             </div>
 
             <div style={{ marginTop: '20px', textAlign: 'right' }}>
-              <button 
-                className="btn btn-secondary" 
+              <button
+                className="btn btn-secondary"
                 onClick={handleCloseModal}
                 style={{ padding: '10px 30px', fontWeight: 'bold' }}
               >
@@ -341,7 +341,7 @@ function VistaContabilidad({ owners }) {
 
       {/* Modal Informe */}
       {showInforme && registroActual && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             top: 0,
@@ -356,7 +356,7 @@ function VistaContabilidad({ owners }) {
           }}
           onClick={handleCloseInforme}
         >
-          <div 
+          <div
             style={{
               background: 'white',
               borderRadius: '15px',
@@ -370,11 +370,11 @@ function VistaContabilidad({ owners }) {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header del Informe */}
-            <div style={{ 
-              background: '#364858', 
-              color: 'white', 
-              padding: '20px', 
-              borderRadius: '0px', 
+            <div style={{
+              background: '#364858',
+              color: 'white',
+              padding: '20px',
+              borderRadius: '0px',
               marginBottom: '0px',
               textAlign: 'center'
             }}>
@@ -384,16 +384,16 @@ function VistaContabilidad({ owners }) {
             </div>
 
             {/* Resumen Financiero */}
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(4, 1fr)', 
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
               gap: '0px',
               marginBottom: '0px',
               borderBottom: '3px solid #364858'
             }}>
-              <div style={{ 
-                padding: '20px', 
-                background: 'white', 
+              <div style={{
+                padding: '20px',
+                background: 'white',
                 textAlign: 'center',
                 borderRight: '1px solid #ddd'
               }}>
@@ -405,32 +405,32 @@ function VistaContabilidad({ owners }) {
                     .toFixed(2)}
                 </div>
               </div>
-              <div style={{ 
-                padding: '20px', 
-                background: 'white', 
+              <div style={{
+                padding: '20px',
+                background: 'white',
                 textAlign: 'center',
                 borderRight: '1px solid #ddd'
               }}>
                 <div style={{ fontSize: '13px', color: '#666', marginBottom: '10px', fontWeight: '600' }}>Monto Cuota Mensual:</div>
                 <div style={{ fontSize: '24px', fontWeight: 'bold' }}>DOP$ {registroActual.montoPagar?.toFixed(2) || '0.00'}</div>
               </div>
-              <div style={{ 
-                padding: '20px', 
-                background: 'white', 
+              <div style={{
+                padding: '20px',
+                background: 'white',
                 textAlign: 'center',
                 borderRight: '1px solid #ddd'
               }}>
                 <div style={{ fontSize: '13px', color: '#666', marginBottom: '10px', fontWeight: '600' }}>Monto a Pagar Total:</div>
                 <div style={{ fontSize: '24px', fontWeight: 'bold' }}>DOP$ {registroActual.montoPagar?.toFixed(2) || '0.00'}</div>
               </div>
-              <div style={{ 
-                padding: '20px', 
-                background: '#ffebee', 
+              <div style={{
+                padding: '20px',
+                background: '#ffebee',
                 textAlign: 'center'
               }}>
                 <div style={{ fontSize: '13px', color: '#666', marginBottom: '10px', fontWeight: '600' }}>Balance total Pendiente:</div>
-                <div style={{ 
-                  fontSize: '24px', 
+                <div style={{
+                  fontSize: '24px',
                   fontWeight: 'bold',
                   color: '#dc3545'
                 }}>
@@ -462,23 +462,28 @@ function VistaContabilidad({ owners }) {
                     <tr key={idx} style={{ borderBottom: '1px solid #ddd' }}>
                       <td style={{ padding: '12px', fontSize: '12px' }}>{detalle.numApto}</td>
                       <td style={{ padding: '12px', fontSize: '12px' }}>{detalle.nombrePropietario}</td>
-                      <td style={{ padding: '12px', textAlign: 'center' }}>
-                        <span 
-                          style={{
-                            display: 'inline-block',
-                            width: '10px',
-                            height: '10px',
-                            borderRadius: '50%',
-                            backgroundColor: detalle.balance >= 0 ? '#28a745' : '#dc3545'
-                          }}
-                        ></span>
-                      </td>
+                        <td style={{ padding: '12px', textAlign: 'center' }}>
+                            <span
+                                style={{
+                                    display: 'inline-block',
+                                    padding: '4px 12px',       // Espacio interno para que no quede apretado
+                                    borderRadius: '20px',      // Bordes redondeados tipo "píldora"
+                                    color: '#ffffff',          // Texto blanco para contraste
+                                    fontSize: '12px',          // Letra un poco más pequeña
+                                    fontWeight: 'bold',        // Texto en negrita
+                                    backgroundColor: detalle.balance >= 0 ? '#28a745' : '#dc3545' // Mismo color de fondo
+                                }}
+                            >
+                            {/* Lógica para cambiar el texto */}
+                            {detalle.balance >= 0 ? 'Al día' : 'Pendiente'}
+                        </span>
+                        </td>
                       <td style={{ padding: '12px', textAlign: 'right', fontSize: '12px' }}>DOP$ {detalle.totalabonado?.toFixed(2) || '0.00'}</td>
                       <td style={{ padding: '12px', textAlign: 'right', fontSize: '12px' }}>DOP$ {detalle.montoPagar?.toFixed(2) || '0.00'}</td>
                       <td style={{ padding: '12px', fontSize: '12px' }}>{detalle.descripcion}</td>
                       <td style={{ padding: '12px', textAlign: 'right', fontSize: '12px' }}>DOP$ {detalle.montoPagar?.toFixed(2) || '0.00'}</td>
-                      <td 
-                        style={{ 
+                      <td
+                        style={{
                           padding: '12px',
                           textAlign: 'right',
                           fontSize: '12px',
@@ -495,7 +500,7 @@ function VistaContabilidad({ owners }) {
             </div>
 
             {/* Sección de recibos */}
-            <div style={{ 
+            <div style={{
               background: '#364858',
               color: 'white',
               padding: '15px',
@@ -509,9 +514,9 @@ function VistaContabilidad({ owners }) {
             </div>
 
             {/* Footer */}
-            <div style={{ 
-              textAlign: 'center', 
-              fontSize: '12px', 
+            <div style={{
+              textAlign: 'center',
+              fontSize: '12px',
               color: '#666',
               padding: '20px',
               borderTop: '2px solid #364858'
@@ -520,8 +525,8 @@ function VistaContabilidad({ owners }) {
             </div>
 
             <div style={{ marginTop: '20px', textAlign: 'right', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-              <button 
-                className="btn btn-secondary" 
+              <button
+                className="btn btn-secondary"
                 onClick={handleCloseInforme}
                 style={{ padding: '10px 30px', fontWeight: 'bold' }}
               >
